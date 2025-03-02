@@ -1,26 +1,586 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import HomePage from './pages/HomePage';
-import AboutServicePage from './pages/AboutServicePage';
-import VIPAccessPage from './pages/VIPAccessPage';
+import React, { useEffect, useState } from 'react';
+import { MessageSquare, Users, DollarSign, ChevronDown, ChevronUp, Zap, Shield, Award, Send, Star, CheckCircle, SendHorizontal as Telegram } from 'lucide-react';
+
+// Animation components
+const FloatingElement = ({ size, color, delay, duration }: { size: number, color: string, delay: number, duration: number }) => {
+  return (
+    <div 
+      className="absolute rounded-full blur-3xl opacity-20 animate-float"
+      style={{
+        width: `${size}px`,
+        height: `${size}px`,
+        backgroundColor: color,
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        animationDelay: `${delay}s`,
+        animationDuration: `${duration}s`
+      }}
+    />
+  );
+};
+
+// FAQ Item component
+const FAQItem = ({ question, answer }: { question: string, answer: string }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  return (
+    <div className="border-b border-gray-800 py-4">
+      <button 
+        className="flex justify-between items-center w-full text-left font-medium text-lg"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {question}
+        {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+      </button>
+      {isOpen && (
+        <div className="mt-2 text-gray-400 animate-fadeIn">
+          {answer}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Pricing Card component
+const PricingCard = ({ 
+  title, 
+  price, 
+  features, 
+  isPopular = false 
+}: { 
+  title: string, 
+  price: string, 
+  features: string[], 
+  isPopular?: boolean 
+}) => {
+  return (
+    <div className={`bg-gray-900/60 backdrop-blur-md rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/20 ${isPopular ? 'border border-cyan-500 relative' : ''}`}>
+      {isPopular && (
+        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-cyan-400 to-purple-500 text-xs font-bold py-1 px-3 rounded-full">
+          MOST POPULAR
+        </div>
+      )}
+      <h3 className="text-xl font-bold mb-2">{title}</h3>
+      <div className="mb-4">
+        <span className="text-3xl font-bold">{price}</span>
+        <span className="text-gray-400">/month</span>
+      </div>
+      <ul className="space-y-2 mb-6">
+        {features.map((feature, index) => (
+          <li key={index} className="flex items-center">
+            <CheckCircle size={16} className="text-cyan-400 mr-2" />
+            <span className="text-gray-300">{feature}</span>
+          </li>
+        ))}
+      </ul>
+      <a 
+        href="https://t.me/your_bot_username" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="block w-full py-2 px-4 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-lg text-center font-medium hover:opacity-90 transition-opacity"
+      >
+        Get Started
+      </a>
+    </div>
+  );
+};
+
+// Testimonial Card component
+const TestimonialCard = ({ 
+  text, 
+  author, 
+  avatarUrl 
+}: { 
+  text: string, 
+  author: string, 
+  avatarUrl: string 
+}) => {
+  return (
+    <div className="bg-gray-900/60 backdrop-blur-md p-6 rounded-xl">
+      <div className="flex items-center mb-4">
+        <img src={avatarUrl} alt={author} className="w-12 h-12 rounded-full mr-4" />
+        <div>
+          <div className="text-lg font-medium">{author}</div>
+          <div className="flex">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} size={16} className="text-yellow-400 fill-yellow-400" />
+            ))}
+          </div>
+        </div>
+      </div>
+      <p className="text-gray-300 italic">"{text}"</p>
+    </div>
+  );
+};
 
 function App() {
+  const [activeSection, setActiveSection] = useState('hero');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = document.querySelectorAll('section');
+      let current = '';
+      
+      sections.forEach((section) => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (window.scrollY >= sectionTop - 200) {
+          current = section.getAttribute('id') || '';
+        }
+      });
+      
+      if (current && current !== activeSection) {
+        setActiveSection(current);
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [activeSection]);
+
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      window.scrollTo({
+        top: section.offsetTop - 80,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
-    <Router>
-      <div className="flex flex-col min-h-screen bg-black text-white">
-        <Navbar />
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/about" element={<AboutServicePage />} />
-            <Route path="/vip" element={<VIPAccessPage />} />
-          </Routes>
-        </main>
-        <Footer />
+    <div className="min-h-screen bg-gray-950 text-white relative overflow-hidden">
+      {/* Grid background */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none"></div>
+      
+      {/* Floating elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <FloatingElement size={300} color="#0891b2" delay={0} duration={20} />
+        <FloatingElement size={400} color="#7e22ce" delay={5} duration={25} />
+        <FloatingElement size={350} color="#ec4899" delay={10} duration={22} />
+        <FloatingElement size={250} color="#3b82f6" delay={15} duration={18} />
       </div>
-    </Router>
+      
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-gray-950/80 backdrop-blur-md border-b border-gray-800">
+        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+          <div className="flex items-center">
+            <Zap size={24} className="text-cyan-400 mr-2" />
+            <span className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">The Trading Dorm</span>
+          </div>
+          
+          <nav className="hidden md:flex space-x-8">
+            {[
+              { id: 'about', label: 'About' },
+              { id: 'how-it-works', label: 'How It Works' },
+              { id: 'pricing', label: 'Pricing' },
+              { id: 'testimonials', label: 'Testimonials' },
+              { id: 'faq', label: 'FAQ' }
+            ].map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className={`text-sm font-medium transition-colors ${
+                  activeSection === item.id ? 'text-cyan-400' : 'text-gray-300 hover:text-white'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
+          
+          <a 
+            href="https://t.me/your_bot_username" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hidden md:flex items-center py-2 px-4 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
+          >
+            <Telegram size={16} className="mr-2" />
+            Join Telegram
+          </a>
+          
+          {/* Mobile menu button */}
+          <button className="md:hidden text-gray-300">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </header>
+      
+      {/* Hero Section */}
+      <section id="hero" className="min-h-screen flex items-center relative pt-20">
+        <div className="container mx-auto px-6 py-12">
+          <div className="max-w-3xl mx-auto text-center">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fadeIn">
+              <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">Unlock VIP Access Today!</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-300 mb-8 animate-fadeIn animation-delay-200">
+              Join our exclusive community and enjoy premium features with just one click.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12 animate-fadeIn animation-delay-400">
+              <a 
+                href="https://t.me/your_bot_username" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="py-3 px-8 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-lg text-lg font-medium hover:opacity-90 transition-opacity flex items-center justify-center"
+              >
+                <Telegram size={20} className="mr-2" />
+                Get Started
+              </a>
+              <button 
+                onClick={() => scrollToSection('how-it-works')}
+                className="py-3 px-8 border border-gray-700 rounded-lg text-lg font-medium hover:bg-gray-800/50 transition-colors flex items-center justify-center"
+              >
+                Learn More
+              </button>
+            </div>
+            
+            <div className="bg-gray-900/60 backdrop-blur-md rounded-xl p-6 max-w-2xl mx-auto animate-fadeIn animation-delay-600">
+              <h3 className="text-xl font-bold mb-4">VIP Benefits</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="flex flex-col items-center p-4">
+                  <Shield size={32} className="text-cyan-400 mb-2" />
+                  <h4 className="font-medium mb-1">Premium Access</h4>
+                  <p className="text-sm text-gray-400 text-center">Exclusive content and features</p>
+                </div>
+                <div className="flex flex-col items-center p-4">
+                  <Users size={32} className="text-purple-400 mb-2" />
+                  <h4 className="font-medium mb-1">Community</h4>
+                  <p className="text-sm text-gray-400 text-center">Connect with like-minded people</p>
+                </div>
+                <div className="flex flex-col items-center p-4">
+                  <Award size={32} className="text-pink-400 mb-2" />
+                  <h4 className="font-medium mb-1">Priority Support</h4>
+                  <p className="text-sm text-gray-400 text-center">Get help when you need it</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+          <button onClick={() => scrollToSection('about')} className="text-gray-400 hover:text-white">
+            <ChevronDown size={24} />
+          </button>
+        </div>
+      </section>
+      
+      {/* About Section */}
+      <section id="about" className="py-20">
+        <div className="container mx-auto px-6">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">About Us</h2>
+            <div className="w-20 h-1 bg-gradient-to-r from-cyan-500 to-purple-600 mx-auto mb-6"></div>
+            <p className="text-lg text-gray-300">
+              We are a team of experts dedicated to providing you with the best tools and services to enhance your experience. 
+              Our mission is to create an exclusive community where members can access premium features and connect with like-minded individuals.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-gray-900/60 backdrop-blur-md rounded-xl p-6 transform transition-all duration-500 hover:scale-105">
+              <div className="bg-gradient-to-r from-cyan-500 to-cyan-400 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                <Shield size={24} />
+              </div>
+              <h3 className="text-xl font-bold mb-2">Security</h3>
+              <p className="text-gray-400">
+                Your data and privacy are our top priorities. We use state-of-the-art encryption to keep your information safe.
+              </p>
+            </div>
+            
+            <div className="bg-gray-900/60 backdrop-blur-md rounded-xl p-6 transform transition-all duration-500 hover:scale-105">
+              <div className="bg-gradient-to-r from-purple-500 to-purple-400 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                <Users size={24} />
+              </div>
+              <h3 className="text-xl font-bold mb-2">Community</h3>
+              <p className="text-gray-400">
+                Join a thriving community of users who share your interests and goals. Connect, collaborate, and grow together.
+              </p>
+            </div>
+            
+            <div className="bg-gray-900/60 backdrop-blur-md rounded-xl p-6 transform transition-all duration-500 hover:scale-105">
+              <div className="bg-gradient-to-r from-pink-500 to-pink-400 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                <Zap size={24} />
+              </div>
+              <h3 className="text-xl font-bold mb-2">Innovation</h3>
+              <p className="text-gray-400">
+                We're constantly improving and adding new features to enhance your experience and provide more value.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* How It Works Section */}
+      <section id="how-it-works" className="py-20 bg-gray-900/30">
+        <div className="container mx-auto px-6">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">How It Works</h2>
+            <div className="w-20 h-1 bg-gradient-to-r from-cyan-500 to-purple-600 mx-auto mb-6"></div>
+            <p className="text-lg text-gray-300">
+              Getting started with VIP Access is quick and easy. Follow these simple steps to join our exclusive community.
+            </p>
+          </div>
+          
+          <div className="max-w-4xl mx-auto">
+            <div className="relative">
+              <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-cyan-500 to-purple-600"></div>
+              
+              <div className="space-y-12">
+                <div className="flex flex-col md:flex-row items-center">
+                  <div className="md:w-1/2 md:pr-12 mb-6 md:mb-0 md:text-right">
+                    <h3 className="text-xl font-bold mb-2">Step 1: Join Telegram</h3>
+                    <p className="text-gray-400">
+                      Click the "Get Started" button to join our Telegram bot. It only takes a few seconds.
+                    </p>
+                  </div>
+                  <div className="md:w-1/2 flex justify-start md:justify-center">
+                    <div className="bg-gradient-to-r from-cyan-500 to-cyan-400 w-12 h-12 rounded-full flex items-center justify-center z-10">
+                      <Telegram size={24} />
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col md:flex-row items-center">
+                  <div className="md:w-1/2 md:pr-12 mb-6 md:mb-0 md:text-right order-1 md:order-2">
+                    <div className="bg-gradient-to-r from-purple-500 to-purple-400 w-12 h-12 rounded-full flex items-center justify-center z-10">
+                      <DollarSign size={24} />
+                    </div>
+                  </div>
+                  <div className="md:w-1/2 md:pl-12 order-2 md:order-1">
+                    <h3 className="text-xl font-bold mb-2">Step 2: Choose Your Plan</h3>
+                    <p className="text-gray-400">
+                      Select the plan that best fits your needs. We offer various options to ensure there's something for everyone.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col md:flex-row items-center">
+                  <div className="md:w-1/2 md:pr-12 mb-6 md:mb-0 md:text-right">
+                    <h3 className="text-xl font-bold mb-2">Step 3: Enjoy VIP Benefits</h3>
+                    <p className="text-gray-400">
+                      Once your payment is processed, you'll instantly gain access to all VIP features and our exclusive community.
+                    </p>
+                  </div>
+                  <div className="md:w-1/2 flex justify-start md:justify-center">
+                    <div className="bg-gradient-to-r from-pink-500 to-pink-400 w-12 h-12 rounded-full flex items-center justify-center z-10">
+                      <Award size={24} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Pricing Section */}
+      <section id="pricing" className="py-20">
+        <div className="container mx-auto px-6">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Pricing</h2>
+            <div className="w-20 h-1 bg-gradient-to-r from-cyan-500 to-purple-600 mx-auto mb-6"></div>
+            <p className="text-lg text-gray-300">
+              Choose the plan that works best for you. All plans include access to our Telegram community.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <PricingCard 
+              title="Basic" 
+              price="$10" 
+              features={[
+                "Access to basic features",
+                "Community access",
+                "Standard support",
+                "Monthly updates"
+              ]}
+            />
+            
+            <PricingCard 
+              title="Pro" 
+              price="$25" 
+              features={[
+                "All Basic features",
+                "Advanced tools",
+                "Priority support",
+                "Weekly updates",
+                "Exclusive content"
+              ]}
+              isPopular={true}
+            />
+            
+            <PricingCard 
+              title="VIP" 
+              price="$50" 
+              features={[
+                "All Pro features",
+                "Premium tools",
+                "24/7 support",
+                "Daily updates",
+                "Exclusive content",
+                "One-on-one sessions"
+              ]}
+            />
+          </div>
+          
+          <div className="mt-12 text-center">
+            <p className="text-gray-400 mb-4">Need a custom plan for your team?</p>
+            <a 
+              href="https://t.me/your_bot_username" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center py-2 px-4 bg-gray-800 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors"
+            >
+              <MessageSquare size={16} className="mr-2" />
+              Contact Us
+            </a>
+          </div>
+        </div>
+      </section>
+      
+      {/* Testimonials Section */}
+      <section id="testimonials" className="py-20 bg-gray-900/30">
+        <div className="container mx-auto px-6">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Don't Take Our Word For It</h2>
+            <div className="w-20 h-1 bg-gradient-to-r from-cyan-500 to-purple-600 mx-auto mb-6"></div>
+            <p className="text-lg text-gray-300">
+              Here's what our members have to say about their VIP experience.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <TestimonialCard 
+              text="This service changed the game for me! The VIP features are absolutely worth every penny. Highly recommend it to anyone serious about taking their experience to the next level."
+              author="Alex Johnson"
+              avatarUrl="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+            />
+            
+            <TestimonialCard 
+              text="I was skeptical at first, but after joining the VIP program, I can't imagine going back. The community is amazing and the support team is always there when you need them."
+              author="Sarah Williams"
+              avatarUrl="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+            />
+            
+            <TestimonialCard 
+              text="The exclusive content alone is worth the price of admission. I've learned so much from the community and the premium tools have saved me countless hours of work."
+              author="Michael Chen"
+              avatarUrl="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+            />
+          </div>
+        </div>
+      </section>
+      
+      {/* FAQ Section */}
+      <section id="faq" className="py-20">
+        <div className="container mx-auto px-6">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
+            <div className="w-20 h-1 bg-gradient-to-r from-cyan-500 to-purple-600 mx-auto mb-6"></div>
+            <p className="text-lg text-gray-300">
+              Got questions? We've got answers. If you don't see what you're looking for, feel free to contact us.
+            </p>
+          </div>
+          
+          <div className="max-w-3xl mx-auto">
+            <FAQItem 
+              question="How do I get started?" 
+              answer="Simply join our Telegram bot by clicking the 'Get Started' button and follow the instructions. The process takes less than a minute."
+            />
+            
+            <FAQItem 
+              question="Is there a free trial?" 
+              answer="No, but we offer a 7-day money-back guarantee if you're not satisfied with our service."
+            />
+            
+            <FAQItem 
+              question="How do I cancel my subscription?" 
+              answer="You can cancel your subscription at any time through our Telegram bot. Your access will remain active until the end of your billing period."
+            />
+            
+            <FAQItem 
+              question="What payment methods do you accept?" 
+              answer="We accept all major credit cards, PayPal, and cryptocurrency payments."
+            />
+            
+            <FAQItem 
+              question="Can I upgrade my plan later?" 
+              answer="Yes, you can upgrade your plan at any time. The price difference will be prorated for the remainder of your billing period."
+            />
+            
+            <FAQItem 
+              question="How can I contact support?" 
+              answer="You can reach our support team through the Telegram bot or by sending an email to support@The Trading Dorm.com."
+            />
+          </div>
+        </div>
+      </section>
+      
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-cyan-900/50 to-purple-900/50">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-3xl font-bold mb-4">Ready to Join?</h2>
+          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+            Don't miss out on exclusive features and our amazing community. Join VIP Access today!
+          </p>
+          <a 
+            href="https://t.me/your_bot_username" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center py-3 px-8 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-lg text-lg font-medium hover:opacity-90 transition-opacity"
+          >
+            <Telegram size={20} className="mr-2" />
+            Get VIP Access
+          </a>
+        </div>
+      </section>
+      
+      {/* Footer */}
+      <footer className="bg-gray-950 border-t border-gray-800 py-12">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center mb-6 md:mb-0">
+              <Zap size={24} className="text-cyan-400 mr-2" />
+              <span className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">The Trading Dorm</span>
+            </div>
+            
+            <div className="flex space-x-6 mb-6 md:mb-0">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
+                </svg>
+              </a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                </svg>
+              </a>
+              <a 
+                href="https://t.me/your_bot_username" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <Telegram size={24} />
+              </a>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between">
+            <p className="text-gray-400 text-sm mb-4 md:mb-0">
+              &copy; {new Date().getFullYear()} The Trading Dorm. All rights reserved.
+            </p>
+            <div className="flex space-x-6">
+              <a href="#" className="text-gray-400 hover:text-white text-sm">Privacy Policy</a>
+              <a href="#" className="text-gray-400 hover:text-white text-sm">Terms of Service</a>
+              <a href="#" className="text-gray-400 hover:text-white text-sm">Contact</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
   );
 }
 
