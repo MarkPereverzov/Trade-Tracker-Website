@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { MessageSquare, Users, DollarSign, ChevronDown, ChevronUp, Zap, Shield, Award, Send, Star, CheckCircle, SendHorizontal as Telegram } from 'lucide-react';
+import React, { useEffect, useState, useRef } from 'react';
+import { MessageSquare, Users, DollarSign, ChevronDown, ChevronUp, Zap, Shield, Award, Star, CheckCircle, Instagram as Telegram } from 'lucide-react';
 
 // Animation components
 const FloatingElement = ({ size, color, delay, duration }: { size: number, color: string, delay: number, duration: number }) => {
@@ -16,6 +16,24 @@ const FloatingElement = ({ size, color, delay, duration }: { size: number, color
         animationDuration: `${duration}s`
       }}
     />
+  );
+};
+
+// Dynamic Background component
+const DynamicBackground = () => {
+  return (
+    <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      <div className="dynamic-bg dynamic-bg-1 animate-pulse-slow"></div>
+      <div className="dynamic-bg dynamic-bg-2 animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
+      <div className="dynamic-bg dynamic-bg-3 animate-pulse-slow" style={{ animationDelay: '4s' }}></div>
+      <div className="dynamic-bg dynamic-bg-4 animate-pulse-slow" style={{ animationDelay: '6s' }}></div>
+      
+      {/* Floating elements */}
+      <FloatingElement size={300} color="#0891b2" delay={0} duration={20} />
+      <FloatingElement size={400} color="#7e22ce" delay={5} duration={25} />
+      <FloatingElement size={350} color="#ec4899" delay={10} duration={22} />
+      <FloatingElement size={250} color="#3b82f6" delay={15} duration={18} />
+    </div>
   );
 };
 
@@ -54,7 +72,7 @@ const PricingCard = ({
   isPopular?: boolean 
 }) => {
   return (
-    <div className={`bg-gray-900/60 backdrop-blur-md rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/20 ${isPopular ? 'border border-cyan-500 relative' : ''}`}>
+    <div className={`glass rounded-xl p-6 transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/20 ${isPopular ? 'border border-cyan-500 relative' : ''}`}>
       {isPopular && (
         <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-cyan-400 to-purple-500 text-xs font-bold py-1 px-3 rounded-full">
           MOST POPULAR
@@ -89,35 +107,74 @@ const PricingCard = ({
 const TestimonialCard = ({ 
   text, 
   author, 
-  avatarUrl 
+  avatarUrl,
+  username
 }: { 
   text: string, 
   author: string, 
-  avatarUrl: string 
+  avatarUrl: string,
+  username: string
 }) => {
   return (
-    <div className="bg-gray-900/60 backdrop-blur-md p-6 rounded-xl">
-      <div className="flex items-center mb-4">
-        <img src={avatarUrl} alt={author} className="w-12 h-12 rounded-full mr-4" />
+    <div className="glass p-6 rounded-xl h-full flex flex-col">
+      <div className="flex mb-2">
+        {[...Array(5)].map((_, i) => (
+          <Star key={i} size={16} className="text-yellow-400 fill-yellow-400" />
+        ))}
+      </div>
+      <p className="text-gray-300 mb-4 flex-grow">{text}</p>
+      <div className="flex items-center mt-auto">
+        <img src={avatarUrl} alt={author} className="w-10 h-10 rounded-full mr-3" />
         <div>
-          <div className="text-lg font-medium">{author}</div>
-          <div className="flex">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} size={16} className="text-yellow-400 fill-yellow-400" />
-            ))}
-          </div>
+          <div className="font-medium">{username}</div>
         </div>
       </div>
-      <p className="text-gray-300 italic">"{text}"</p>
     </div>
   );
 };
 
 function App() {
   const [activeSection, setActiveSection] = useState('hero');
+  const [scrollY, setScrollY] = useState(0);
+  
+  // Testimonials data
+  const testimonials = [
+    {
+      text: "The analysts & talent give their heart & soul to provide value, and that alone to me makes The Trading Dorm one of the best educational trading communities",
+      author: "Alex Johnson",
+      avatarUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      username: "Etmost"
+    },
+    {
+      text: "The quality of the traders is insane, and the thing is that everyone is rooting for you to win. Every analyst is a beast in his own",
+      author: "Sarah Williams",
+      avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      username: "Utsider"
+    },
+    {
+      text: "When it comes to trading crypto with like-minded individuals who are serious about their craft, The Trading Dorm is the place to be",
+      author: "Michael Chen",
+      avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      username: "CryptoMaster"
+    },
+    {
+      text: "The Trading Dorm has completely transformed my approach. The insights and strategies I've gained are invaluable. The community is supportive and the tools are top-notch.",
+      author: "Emma Rodriguez",
+      avatarUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      username: "TradingQueen"
+    },
+    {
+      text: "I've tried several similar services, but none compare to The Trading Dorm. The value you get for the price is unmatched. The team is responsive and genuinely cares about your success.",
+      author: "David Kim",
+      avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      username: "TradeWise"
+    }
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
+      setScrollY(window.scrollY);
+      
       const sections = document.querySelectorAll('section');
       let current = '';
       
@@ -132,9 +189,22 @@ function App() {
       if (current && current !== activeSection) {
         setActiveSection(current);
       }
+      
+      // Reveal animations on scroll
+      const reveals = document.querySelectorAll('.reveal');
+      reveals.forEach((reveal) => {
+        const revealTop = reveal.getBoundingClientRect().top;
+        const revealPoint = 150;
+        
+        if (revealTop < window.innerHeight - revealPoint) {
+          reveal.classList.add('active');
+        }
+      });
     };
     
     window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial check
+    
     return () => window.removeEventListener('scroll', handleScroll);
   }, [activeSection]);
 
@@ -142,7 +212,7 @@ function App() {
     const section = document.getElementById(sectionId);
     if (section) {
       window.scrollTo({
-        top: section.offsetTop - 80,
+        top: section.offsetTop - 100,
         behavior: 'smooth'
       });
     }
@@ -153,67 +223,64 @@ function App() {
       {/* Grid background */}
       <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none"></div>
       
-      {/* Floating elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <FloatingElement size={300} color="#0891b2" delay={0} duration={20} />
-        <FloatingElement size={400} color="#7e22ce" delay={5} duration={25} />
-        <FloatingElement size={350} color="#ec4899" delay={10} duration={22} />
-        <FloatingElement size={250} color="#3b82f6" delay={15} duration={18} />
-      </div>
+      {/* Dynamic background */}
+      <DynamicBackground />
       
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-gray-950/80 backdrop-blur-md border-b border-gray-800">
-        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center">
-            <Zap size={24} className="text-cyan-400 mr-2" />
-            <span className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">The Trading Dorm</span>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrollY > 50 ? 'glass border-b border-gray-800' : 'bg-transparent'}`}>
+        <div className="container mx-auto px-6 py-6">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center">
+              <Zap size={28} className="text-cyan-400 mr-2" />
+              <span className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">The Trading Dorm</span>
+            </div>
+            
+            <nav className="hidden md:flex space-x-8">
+              {[
+                { id: 'about', label: 'About' },
+                { id: 'how-it-works', label: 'How It Works' },
+                { id: 'pricing', label: 'Pricing' },
+                { id: 'testimonials', label: 'Testimonials' },
+                { id: 'faq', label: 'FAQ' }
+              ].map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className={`text-sm font-medium transition-colors ${
+                    activeSection === item.id ? 'text-cyan-400' : 'text-gray-300 hover:text-white'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </nav>
+            
+            <a 
+              href="https://t.me/your_bot_username" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hidden md:flex items-center py-2 px-4 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
+            >
+              <Telegram size={16} className="mr-2" />
+              Join Telegram
+            </a>
+            
+            {/* Mobile menu button */}
+            <button className="md:hidden text-gray-300">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
           </div>
-          
-          <nav className="hidden md:flex space-x-8">
-            {[
-              { id: 'about', label: 'About' },
-              { id: 'how-it-works', label: 'How It Works' },
-              { id: 'pricing', label: 'Pricing' },
-              { id: 'testimonials', label: 'Testimonials' },
-              { id: 'faq', label: 'FAQ' }
-            ].map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className={`text-sm font-medium transition-colors ${
-                  activeSection === item.id ? 'text-cyan-400' : 'text-gray-300 hover:text-white'
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-          </nav>
-          
-          <a 
-            href="https://t.me/your_bot_username" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="hidden md:flex items-center py-2 px-4 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
-          >
-            <Telegram size={16} className="mr-2" />
-            Join Telegram
-          </a>
-          
-          {/* Mobile menu button */}
-          <button className="md:hidden text-gray-300">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
         </div>
       </header>
       
       {/* Hero Section */}
-      <section id="hero" className="min-h-screen flex items-center relative pt-20">
+      <section id="hero" className="min-h-screen flex items-center relative pt-32">
         <div className="container mx-auto px-6 py-12">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fadeIn">
-              <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">Unlock VIP Access Today!</span>
+              <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent animate-gradient">Unlock VIP Access Today!</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-8 animate-fadeIn animation-delay-200">
               Join our exclusive community and enjoy premium features with just one click.
@@ -223,7 +290,7 @@ function App() {
                 href="https://t.me/your_bot_username" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="py-3 px-8 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-lg text-lg font-medium hover:opacity-90 transition-opacity flex items-center justify-center"
+                className="py-3 px-8 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-lg text-lg font-medium hover:opacity-90 transition-opacity flex items-center justify-center hover:shadow-lg hover:shadow-cyan-500/20"
               >
                 <Telegram size={20} className="mr-2" />
                 Get Started
@@ -234,27 +301,6 @@ function App() {
               >
                 Learn More
               </button>
-            </div>
-            
-            <div className="bg-gray-900/60 backdrop-blur-md rounded-xl p-6 max-w-2xl mx-auto animate-fadeIn animation-delay-600">
-              <h3 className="text-xl font-bold mb-4">VIP Benefits</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="flex flex-col items-center p-4">
-                  <Shield size={32} className="text-cyan-400 mb-2" />
-                  <h4 className="font-medium mb-1">Premium Access</h4>
-                  <p className="text-sm text-gray-400 text-center">Exclusive content and features</p>
-                </div>
-                <div className="flex flex-col items-center p-4">
-                  <Users size={32} className="text-purple-400 mb-2" />
-                  <h4 className="font-medium mb-1">Community</h4>
-                  <p className="text-sm text-gray-400 text-center">Connect with like-minded people</p>
-                </div>
-                <div className="flex flex-col items-center p-4">
-                  <Award size={32} className="text-pink-400 mb-2" />
-                  <h4 className="font-medium mb-1">Priority Support</h4>
-                  <p className="text-sm text-gray-400 text-center">Get help when you need it</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -269,7 +315,7 @@ function App() {
       {/* About Section */}
       <section id="about" className="py-20">
         <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto text-center mb-12">
+          <div className="max-w-3xl mx-auto text-center mb-12 reveal reveal-up">
             <h2 className="text-3xl font-bold mb-4">About Us</h2>
             <div className="w-20 h-1 bg-gradient-to-r from-cyan-500 to-purple-600 mx-auto mb-6"></div>
             <p className="text-lg text-gray-300">
@@ -279,7 +325,7 @@ function App() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-gray-900/60 backdrop-blur-md rounded-xl p-6 transform transition-all duration-500 hover:scale-105">
+            <div className="glass rounded-xl p-6 transform transition-all duration-500 hover:scale-105 reveal reveal-left">
               <div className="bg-gradient-to-r from-cyan-500 to-cyan-400 w-12 h-12 rounded-full flex items-center justify-center mb-4">
                 <Shield size={24} />
               </div>
@@ -289,7 +335,7 @@ function App() {
               </p>
             </div>
             
-            <div className="bg-gray-900/60 backdrop-blur-md rounded-xl p-6 transform transition-all duration-500 hover:scale-105">
+            <div className="glass rounded-xl p-6 transform transition-all duration-500 hover:scale-105 reveal reveal-up animation-delay-200">
               <div className="bg-gradient-to-r from-purple-500 to-purple-400 w-12 h-12 rounded-full flex items-center justify-center mb-4">
                 <Users size={24} />
               </div>
@@ -299,7 +345,7 @@ function App() {
               </p>
             </div>
             
-            <div className="bg-gray-900/60 backdrop-blur-md rounded-xl p-6 transform transition-all duration-500 hover:scale-105">
+            <div className="glass rounded-xl p-6 transform transition-all duration-500 hover:scale-105 reveal reveal-right animation-delay-400">
               <div className="bg-gradient-to-r from-pink-500 to-pink-400 w-12 h-12 rounded-full flex items-center justify-center mb-4">
                 <Zap size={24} />
               </div>
@@ -315,7 +361,7 @@ function App() {
       {/* How It Works Section */}
       <section id="how-it-works" className="py-20 bg-gray-900/30">
         <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto text-center mb-12">
+          <div className="max-w-3xl mx-auto text-center mb-12 reveal reveal-up">
             <h2 className="text-3xl font-bold mb-4">How It Works</h2>
             <div className="w-20 h-1 bg-gradient-to-r from-cyan-500 to-purple-600 mx-auto mb-6"></div>
             <p className="text-lg text-gray-300">
@@ -324,51 +370,35 @@ function App() {
           </div>
           
           <div className="max-w-4xl mx-auto">
-            <div className="relative">
-              <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-cyan-500 to-purple-600"></div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="glass rounded-xl p-6 text-center transform transition-all duration-500 hover:scale-105 reveal reveal-left">
+                <div className="bg-gradient-to-r from-cyan-500 to-cyan-400 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Telegram size={32} />
+                </div>
+                <h3 className="text-xl font-bold mb-2">Step 1: Join Telegram</h3>
+                <p className="text-gray-400">
+                  Click the "Get Started" button to join our Telegram bot. It only takes a few seconds.
+                </p>
+              </div>
               
-              <div className="space-y-12">
-                <div className="flex flex-col md:flex-row items-center">
-                  <div className="md:w-1/2 md:pr-12 mb-6 md:mb-0 md:text-right">
-                    <h3 className="text-xl font-bold mb-2">Step 1: Join Telegram</h3>
-                    <p className="text-gray-400">
-                      Click the "Get Started" button to join our Telegram bot. It only takes a few seconds.
-                    </p>
-                  </div>
-                  <div className="md:w-1/2 flex justify-start md:justify-center">
-                    <div className="bg-gradient-to-r from-cyan-500 to-cyan-400 w-12 h-12 rounded-full flex items-center justify-center z-10">
-                      <Telegram size={24} />
-                    </div>
-                  </div>
+              <div className="glass rounded-xl p-6 text-center transform transition-all duration-500 hover:scale-105 reveal reveal-up animation-delay-200">
+                <div className="bg-gradient-to-r from-purple-500 to-purple-400 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <DollarSign size={32} />
                 </div>
-                
-                <div className="flex flex-col md:flex-row items-center">
-                  <div className="md:w-1/2 md:pr-12 mb-6 md:mb-0 md:text-right order-1 md:order-2">
-                    <div className="bg-gradient-to-r from-purple-500 to-purple-400 w-12 h-12 rounded-full flex items-center justify-center z-10">
-                      <DollarSign size={24} />
-                    </div>
-                  </div>
-                  <div className="md:w-1/2 md:pl-12 order-2 md:order-1">
-                    <h3 className="text-xl font-bold mb-2">Step 2: Choose Your Plan</h3>
-                    <p className="text-gray-400">
-                      Select the plan that best fits your needs. We offer various options to ensure there's something for everyone.
-                    </p>
-                  </div>
+                <h3 className="text-xl font-bold mb-2">Step 2: Choose Your Plan</h3>
+                <p className="text-gray-400">
+                  Select the plan that best fits your needs. We offer various options to ensure there's something for everyone.
+                </p>
+              </div>
+              
+              <div className="glass rounded-xl p-6 text-center transform transition-all duration-500 hover:scale-105 reveal reveal-right animation-delay-400">
+                <div className="bg-gradient-to-r from-pink-500 to-pink-400 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Award size={32} />
                 </div>
-                
-                <div className="flex flex-col md:flex-row items-center">
-                  <div className="md:w-1/2 md:pr-12 mb-6 md:mb-0 md:text-right">
-                    <h3 className="text-xl font-bold mb-2">Step 3: Enjoy VIP Benefits</h3>
-                    <p className="text-gray-400">
-                      Once your payment is processed, you'll instantly gain access to all VIP features and our exclusive community.
-                    </p>
-                  </div>
-                  <div className="md:w-1/2 flex justify-start md:justify-center">
-                    <div className="bg-gradient-to-r from-pink-500 to-pink-400 w-12 h-12 rounded-full flex items-center justify-center z-10">
-                      <Award size={24} />
-                    </div>
-                  </div>
-                </div>
+                <h3 className="text-xl font-bold mb-2">Step 3: Enjoy VIP Benefits</h3>
+                <p className="text-gray-400">
+                  Once your payment is processed, you'll instantly gain access to all VIP features and our exclusive community.
+                </p>
               </div>
             </div>
           </div>
@@ -378,7 +408,7 @@ function App() {
       {/* Pricing Section */}
       <section id="pricing" className="py-20">
         <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto text-center mb-12">
+          <div className="max-w-3xl mx-auto text-center mb-12 reveal reveal-up">
             <h2 className="text-3xl font-bold mb-4">Pricing</h2>
             <div className="w-20 h-1 bg-gradient-to-r from-cyan-500 to-purple-600 mx-auto mb-6"></div>
             <p className="text-lg text-gray-300">
@@ -387,45 +417,51 @@ function App() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <PricingCard 
-              title="Basic" 
-              price="$10" 
-              features={[
-                "Access to basic features",
-                "Community access",
-                "Standard support",
-                "Monthly updates"
-              ]}
-            />
+            <div className="reveal reveal-left">
+              <PricingCard 
+                title="Basic" 
+                price="$10" 
+                features={[
+                  "Access to basic features",
+                  "Community access",
+                  "Standard support",
+                  "Monthly updates"
+                ]}
+              />
+            </div>
             
-            <PricingCard 
-              title="Pro" 
-              price="$25" 
-              features={[
-                "All Basic features",
-                "Advanced tools",
-                "Priority support",
-                "Weekly updates",
-                "Exclusive content"
-              ]}
-              isPopular={true}
-            />
+            <div className="reveal reveal-up animation-delay-200">
+              <PricingCard 
+                title="Pro" 
+                price="$25" 
+                features={[
+                  "All Basic features",
+                  "Advanced tools",
+                  "Priority support",
+                  "Weekly updates",
+                  "Exclusive content"
+                ]}
+                isPopular={true}
+              />
+            </div>
             
-            <PricingCard 
-              title="VIP" 
-              price="$50" 
-              features={[
-                "All Pro features",
-                "Premium tools",
-                "24/7 support",
-                "Daily updates",
-                "Exclusive content",
-                "One-on-one sessions"
-              ]}
-            />
+            <div className="reveal reveal-right animation-delay-400">
+              <PricingCard 
+                title="VIP" 
+                price="$50" 
+                features={[
+                  "All Pro features",
+                  "Premium tools",
+                  "24/7 support",
+                  "Daily updates",
+                  "Exclusive content",
+                  "One-on-one sessions"
+                ]}
+              />
+            </div>
           </div>
           
-          <div className="mt-12 text-center">
+          <div className="mt-12 text-center reveal reveal-up animation-delay-600">
             <p className="text-gray-400 mb-4">Need a custom plan for your team?</p>
             <a 
               href="https://t.me/your_bot_username" 
@@ -443,32 +479,29 @@ function App() {
       {/* Testimonials Section */}
       <section id="testimonials" className="py-20 bg-gray-900/30">
         <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Don't Take Our Word For It</h2>
+          <div className="max-w-3xl mx-auto text-center mb-12 reveal reveal-up">
+            <h2 className="text-5xl font-bold mb-4">Don't take our word for it</h2>
             <div className="w-20 h-1 bg-gradient-to-r from-cyan-500 to-purple-600 mx-auto mb-6"></div>
             <p className="text-lg text-gray-300">
-              Here's what our members have to say about their VIP experience.
+              Hear it first hand from one of our hundreds of satisfied members.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <TestimonialCard 
-              text="This service changed the game for me! The VIP features are absolutely worth every penny. Highly recommend it to anyone serious about taking their experience to the next level."
-              author="Alex Johnson"
-              avatarUrl="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-            />
-            
-            <TestimonialCard 
-              text="I was skeptical at first, but after joining the VIP program, I can't imagine going back. The community is amazing and the support team is always there when you need them."
-              author="Sarah Williams"
-              avatarUrl="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-            />
-            
-            <TestimonialCard 
-              text="The exclusive content alone is worth the price of admission. I've learned so much from the community and the premium tools have saved me countless hours of work."
-              author="Michael Chen"
-              avatarUrl="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-            />
+          <div className="reveal reveal-up animation-delay-200">
+            <div className="overflow-x-auto pb-4 testimonials-scroll">
+              <div className="flex gap-6 min-w-max px-4">
+                {testimonials.map((testimonial, index) => (
+                  <div key={index} className="w-80 flex-shrink-0">
+                    <TestimonialCard 
+                      text={testimonial.text}
+                      author={testimonial.author}
+                      avatarUrl={testimonial.avatarUrl}
+                      username={testimonial.username}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -476,7 +509,7 @@ function App() {
       {/* FAQ Section */}
       <section id="faq" className="py-20">
         <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto text-center mb-12">
+          <div className="max-w-3xl mx-auto text-center mb-12 reveal reveal-up">
             <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
             <div className="w-20 h-1 bg-gradient-to-r from-cyan-500 to-purple-600 mx-auto mb-6"></div>
             <p className="text-lg text-gray-300">
@@ -484,7 +517,7 @@ function App() {
             </p>
           </div>
           
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-3xl mx-auto reveal reveal-up animation-delay-200">
             <FAQItem 
               question="How do I get started?" 
               answer="Simply join our Telegram bot by clicking the 'Get Started' button and follow the instructions. The process takes less than a minute."
@@ -519,17 +552,17 @@ function App() {
       </section>
       
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-cyan-900/50 to-purple-900/50">
+      <section className="py-20 bg-gradient-to-r from-cyan-900/50 to-purple-900/50 animate-gradient">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Join?</h2>
-          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+          <h2 className="text-3xl font-bold mb-4 reveal reveal-up">Ready to Join?</h2>
+          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto reveal reveal-up animation-delay-200">
             Don't miss out on exclusive features and our amazing community. Join VIP Access today!
           </p>
           <a 
             href="https://t.me/your_bot_username" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="inline-flex items-center py-3 px-8 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-lg text-lg font-medium hover:opacity-90 transition-opacity"
+            className="inline-flex items-center py-3 px-8 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-lg text-lg font-medium hover:opacity-90 transition-opacity reveal reveal-up animation-delay-400 hover:shadow-lg hover:shadow-cyan-500/20"
           >
             <Telegram size={20} className="mr-2" />
             Get VIP Access
