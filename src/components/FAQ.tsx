@@ -43,7 +43,7 @@ const FAQ = () => {
           ref={ref}
           className="text-3xl font-semibold text-center mb-16"
         >
-          Frequently Asked <span className="gradient-text">Questions</span>
+          Frequently Asked <span className="gradient-text animate-gradient">QUESTIONS</span>
         </motion.h2>
 
         <div className="space-y-4">
@@ -62,8 +62,11 @@ const FAQ = () => {
                 boxShadow: openIndex === index ? '0 0 20px rgba(255, 255, 255, 0.3)' : '',
                 backgroundColor: openIndex === index ? 'rgba(255, 255, 255, 0.05)' : ''
               }}
-              className="rounded-lg bg-dark transition-all duration-200"
+              className="rounded-lg bg-dark-lighter border border-white/10 transition-all duration-200 relative overflow-hidden"
             >
+              {/* Размытые цвета в правом верхнем углу */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-r from-primary-start/20 to-primary-end/20 blur-2xl opacity-50"></div>
+
               <button
                 className="w-full px-6 py-4 text-left flex justify-between items-center"
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}

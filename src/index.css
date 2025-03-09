@@ -54,3 +54,24 @@ body {
     transform: translate(-100px, -50px);
   }
 }
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  background: linear-gradient(90deg, #FF007A, #00C6FF, #FF007A);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientAnimation 5s ease infinite;
+}
+

@@ -52,7 +52,7 @@ const Reviews = () => {
           ref={ref}
           className="text-3xl font-semibold text-center mb-16"
         >
-          What Our <span className="gradient-text">Clients Say</span>
+          What Our <span className="gradient-text animate-gradient">CLIENTS SAY</span>
         </motion.h2>
 
         <div className="relative">
@@ -67,7 +67,10 @@ const Reviews = () => {
                 className="w-full flex-shrink-0 px-4"
                 style={{ flex: '0 0 33.333%' }}
               >
-                <div className="p-6 rounded-lg bg-dark-lighter gradient-border h-full">
+                <div className="p-6 rounded-lg bg-dark-lighter border border-white/10 relative overflow-hidden h-full">
+                  {/* Градиентный фон при наведении */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary-start/10 to-primary-end/10 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+
                   <div className="flex justify-between items-start mb-6">
                     <div className="flex items-center">
                       <img
@@ -81,7 +84,7 @@ const Reviews = () => {
                       {[...Array(review.stars)].map((_, i) => (
                         <Star
                           key={i}
-                          className="w-4 h-4 fill-primary-end text-primary-end"
+                          className="w-4 h-4 fill-white text-white" // Белые звездочки
                         />
                       ))}
                     </div>

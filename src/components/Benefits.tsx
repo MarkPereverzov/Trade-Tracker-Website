@@ -45,7 +45,7 @@ const Benefits = () => {
   });
 
   return (
-    <section id="benefits" className="py-24 px-4">
+    <section id="about" className="py-24 px-4">
       <div className="max-w-7xl mx-auto">
         <motion.h2
           initial={{ y: 20, opacity: 0 }}
@@ -54,7 +54,7 @@ const Benefits = () => {
           ref={ref}
           className="text-3xl font-semibold text-center mb-16"
         >
-          Why Choose <span className="gradient-text">Us?</span>
+          Why Choose <span className="gradient-text animate-gradient">US?</span>
         </motion.h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -72,10 +72,15 @@ const Benefits = () => {
                   boxShadow: '0 0 20px rgba(255, 255, 255, 0.5)',
                   transition: { duration: 0.2 } // Ускоряем анимацию при наведении
                 }}
-                className="p-6 rounded-lg bg-dark-lighter gradient-border"
+                className="p-8 rounded-lg bg-dark-lighter border border-white/10 relative overflow-hidden"
               >
-                <Icon className="w-12 h-12 mb-4 text-white" /> {/* Белый цвет иконок */}
-                <h3 className="text-xl font-semibold mb-2">{benefit.title}</h3>
+                {/* Иконка */}
+                <div className="w-16 h-16 mb-6 flex items-center justify-center rounded-full bg-white">
+                  <Icon className="w-8 h-8 text-black" />
+                </div>
+
+                {/* Заголовок и описание */}
+                <h3 className="text-xl font-semibold mb-4">{benefit.title}</h3>
                 <p className="text-gray-400">{benefit.description}</p>
               </motion.div>
             );

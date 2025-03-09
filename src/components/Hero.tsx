@@ -1,5 +1,5 @@
 import React from 'react';
-import { Send, ChevronDown } from 'lucide-react'; // Импортируем Send вместо MessageCircle
+import { Send, ChevronDown, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Hero = () => {
@@ -15,9 +15,9 @@ const Hero = () => {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8 }}
-          className="text-4xl md:text-5xl font-semibold mb-6"
+          className="text-5xl md:text-6xl lg:text-7xl font-semibold mb-6" // Увеличенный размер текста
         >
-          Welcome to <span className="gradient-text">The Trading Dorm</span>
+          <span className="gradient-text animate-gradient">THE TRADING DORM</span>
         </motion.h1>
 
         <motion.p
@@ -29,23 +29,45 @@ const Hero = () => {
           Your gateway to professional crypto trading education
         </motion.p>
 
-        <motion.a
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          href="https://t.me/TradingDormBot"
-          target="_blank"
-          rel="noopener noreferrer"
-          whileHover={{
-            boxShadow: '0 0 20px rgba(255, 255, 255, 0.8)', // Белая подсветка
-            transition: { duration: 0.1, ease: "easeOut" } // Быстрая анимация
-          }}
-          className="inline-flex items-center px-8 py-3 rounded-lg bg-gradient-to-r from-primary-start to-primary-end hover:opacity-90 transition-opacity text-lg"
-        >
-          <Send className="w-6 h-6 mr-2" /> {/* Заменяем MessageCircle на Send */}
-          Join Telegram
-        </motion.a>
+        <div className="flex flex-col md:flex-row gap-4 justify-center">
+          {/* Кнопка Telegram */}
+          <motion.a
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            href="https://t.me/TradingDormBot"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{
+              boxShadow: '0 0 20px rgba(255, 255, 255, 0.8)', // Белая подсветка
+              transition: { duration: 0.1, ease: "easeOut" } // Быстрая анимация
+            }}
+            className="flex items-center justify-center w-full md:w-auto px-8 py-3 text-center rounded-full bg-white text-dark hover:bg-gray-100 transition-all duration-300" // Белая кнопка
+          >
+            <Send className="w-6 h-6 mr-2" /> {/* Иконка Telegram */}
+            Join Telegram
+          </motion.a>
 
+          {/* Кнопка Discord */}
+          <motion.a
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            href="https://discord.gg/your-discord-link" // Замените на вашу ссылку Discord
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{
+              boxShadow: '0 0 20px rgba(255, 255, 255, 0.8)', // Белая подсветка
+              transition: { duration: 0.1, ease: "easeOut" } // Быстрая анимация
+            }}
+            className="flex items-center justify-center w-full md:w-auto px-8 py-3 text-center rounded-full bg-white text-dark hover:bg-gray-100 transition-all duration-300" // Белая кнопка
+          >
+            <MessageCircle className="w-6 h-6 mr-2" /> {/* Иконка Discord */}
+            Join Discord
+          </motion.a>
+        </div>
+
+        {/* Кнопка прокрутки вниз */}
         <motion.a
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}

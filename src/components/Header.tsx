@@ -19,13 +19,13 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Логотип */}
-          <div className="text-3xl font-semibold gradient-text">
-            The Trading Dorm
+          <div className="text-3xl font-semibold font-bold gradient-text animate-gradient">
+            THE TRADING DORM
           </div>
 
           {/* Навигация для десктопов */}
           <nav className="hidden md:flex space-x-10">
-            {['Home', 'Benefits', 'Services', 'Reviews', 'FAQ'].map((item, index) => (
+            {['About', 'Pricing', 'Reviews'].map((item, index) => (
               <motion.a
                 key={item}
                 href={`#${item.toLowerCase()}`}
@@ -44,13 +44,13 @@ const Header = () => {
             href="https://t.me/TradingDormBot"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden md:flex items-center px-6 py-3 rounded-lg bg-gradient-to-r from-primary-start to-primary-end hover:opacity-90 transition-opacity text-lg"
+            className="flex items-center justify-center px-8 py-3 text-center rounded-full bg-white text-dark hover:bg-gray-100 transition-all duration-300" // Белая кнопка
             whileHover={{
               boxShadow: '0 0 20px rgba(255, 255, 255, 0.8)', // Белая подсветка
-              transition: { duration: 0.1, ease: "easeOut" } // Быстрая анимация
+              transition: { duration: 0.1, ease: "easeOut" }, // Быстрая анимация
             }}
           >
-            <Send className="w-6 h-6 mr-2" /> {/* Заменяем иконку на Send */}
+            <Send className="w-5 h-5 mr-2" /> {/* Заменяем иконку на Send */}
             Join Telegram
           </motion.a>
 
@@ -71,7 +71,7 @@ const Header = () => {
             transition={{ duration: 0.3 }}
             className="md:hidden mt-4 pb-4 space-y-4"
           >
-            {['Home', 'Benefits', 'Services', 'Reviews', 'FAQ'].map((item) => (
+            {['About', 'Pricing', 'Reviews'].map((item) => (
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
@@ -85,7 +85,7 @@ const Header = () => {
               href="https://t.me/TradingDormBot"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center px-6 py-3 rounded-lg bg-gradient-to-r from-primary-start to-primary-end hover:opacity-90 transition-opacity text-lg"
+              className="flex items-center justify-center px-6 py-3 rounded-lg bg-white text-dark hover:bg-gray-100 transition-all duration-300" // Белая кнопка
             >
               <Send className="w-6 h-6 mr-2" /> {/* Заменяем иконку на Send */}
               Join Telegram
